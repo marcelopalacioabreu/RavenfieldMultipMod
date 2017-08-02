@@ -1,4 +1,9 @@
-﻿namespace RFMultipMod
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
+
+namespace RFMultipMod
 {
     public class Hook
     {
@@ -23,6 +28,30 @@
             //  Methods such as IsInCustomLevel(), IsIngame(), StartLevel(), StartCustomLevel()
             //SceneManager
             //  Has a list, SceneManager.sceneLoaded, of UnityAction<Scene, LoadSceneMode>, to call when a level is loaded.
+
+
+            //The current player can be accessed through ActorManager.instance.player
+
+            Type type = typeof(InstantActionMaps);
+            MethodInfo info = type.GetMethod("StartGame", BindingFlags.Public | BindingFlags.Instance);
+            MethodInfo ourOnGameStart = typeof(Hook).GetMethod("OnGameStart", BindingFlags.Public | BindingFlags.Static);
+            byte[] il = info.GetMethodBody().GetILAsByteArray();
+
+            List<Byte> ilList = new List<byte>(il)
+            {
+                (byte)OpCodes.Call.Value,
+                (byte)(ourOnGameStart.MetadataToken & 0xFF),
+                (byte)(ourOnGameStart.MetadataToken >> 8 & 0xFF),
+                (byte)(ourOnGameStart.MetadataToken >> 16 & 0xFF),
+                (byte)(ourOnGameStart.MetadataToken >> 24 & 0xFF)
+            };
+
+            InjectionHelper.UpdateILCodes(info, ilList.ToArray());
+        }
+
+        public static void OnGameStart()
+        {
+            Utils.Log("A game started!");
         }
     }
 }
