@@ -9,11 +9,23 @@ namespace RFMultipMod
     {
         public static void StartMultiplayerMod()
         {
-            Utils.Log("\n\n----------------------------------------------------------------------------------------------------------");
-            Utils.Log("This installation is MODDED, with the Ravenfield Multiplayer Mod, created by the RFMpMod team.\n");
+            Utils.Log("");
+            Utils.Log("");
+            Utils.Log("----------------------------------------------------------------------------------------------------------");
+            Utils.Log("This installation is MODDED, with the Ravenfield Multiplayer Mod, created by the RFMpMod team.");
+            Utils.Log("");
             Utils.Log("If you encounter issues, tell them, not SteelRaven7!");
-            Utils.Log("----------------------------------------------------------------------------------------------------------\n\n");
+            Utils.Log("----------------------------------------------------------------------------------------------------------\n");
             Utils.Log("Ravenfield Multiplayer Mod is GO for launch.\n"); //This will all be written to output.log.
+
+
+
+            //----------------------------------------------------------------
+            //VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+            //TODO: Get the installer to copy Injection32 and Injection64 DLLs
+            //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            //----------------------------------------------------------------
+
 
             //TODO: Get some runtime level hooks injected here, see https://www.codeproject.com/articles/463508/net-clr-injection-modify-il-code-on-run-time
 
@@ -31,6 +43,8 @@ namespace RFMultipMod
 
 
             //The current player can be accessed through ActorManager.instance.player
+
+            InjectionHelper.Initialize();
 
             Type type = typeof(InstantActionMaps);
             MethodInfo info = type.GetMethod("StartGame", BindingFlags.Public | BindingFlags.Instance);
