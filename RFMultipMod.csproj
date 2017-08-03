@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Hook.cs" />
+    <Compile Include="HookMonoBehaviour.cs" />
     <Compile Include="InjectionHelper.cs" />
     <Compile Include="NetworkManagerModdedClient.cs" />
     <Compile Include="NetworkScriptandHUD.cs" />
