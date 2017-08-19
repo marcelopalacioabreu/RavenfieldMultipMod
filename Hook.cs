@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RFMultipMod
 {
-    public class Hook
+    public class Hook : MonoBehaviour
     {
         public static void StartMultiplayerMod()
         {
@@ -67,6 +67,9 @@ namespace RFMultipMod
         public static void OnGameStart()
         {
             Utils.Log("A game started!");
+            //Application.Quit();
+            GameObject NSaHUD = new GameObject();
+            NSaHUD.AddComponent<NetworkScriptandHUD>();
         }
     }
 }
