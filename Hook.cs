@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
+﻿using System.Reflection;
 using Harmony;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 namespace RFMultipMod
 {
-    public class Hook : MonoBehaviour
+    public class Hook
     {
         private static HarmonyInstance _harmony;
+        static NetworkScriptandHUD injectedNetworkStuff;
 
         public static void StartMultiplayerMod()
         {
@@ -31,12 +30,8 @@ namespace RFMultipMod
             //Useful stuff for server side - can start game with -map <mapname> or -custommap <workshop id?>
 
             //Useful Classes:
-            //InstantActionMaps.cs - the instant action section of the play menu.
-            //  Has Method StartGame()
             //GameManager.cs - handles a lot of stuff
             //  Methods such as IsInCustomLevel(), IsIngame(), StartLevel(), StartCustomLevel()
-            //SceneManager
-            //  Has a list, SceneManager.sceneLoaded, of UnityAction<Scene, LoadSceneMode>, to call when a level is loaded.
 
 
             //The current player can be accessed through ActorManager.instance.player
@@ -44,6 +39,8 @@ namespace RFMultipMod
             _harmony = HarmonyInstance.Create("rfmultipmod.multipmodharmonyhooker");
 
             _harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+            Utils.Log("Injection setup successful. Helloooooo, world!");
         }
 
         [HarmonyPatch(typeof(InstantActionMaps))]
@@ -51,11 +48,45 @@ namespace RFMultipMod
         [UsedImplicitly]
         private class GameStartPatch
         {
+            [UsedImplicitly]
             static void Prefix()
             {
                 Utils.Log("A game started! Injecting network script and HUD...");
-                //Application.Quit();
-                SceneManager.GetActiveScene().GetRootGameObjects()[0].AddComponent<NetworkScriptandHUD>();
+                injectedNetworkStuff = SceneManager.GetActiveScene().GetRootGameObjects()[0].AddComponent<NetworkScriptandHUD>();
+            }
+        }
+
+        [HarmonyPatch(typeof(FpsActorController))]
+        [HarmonyPatch("Awake")]
+        private class PlayerCreatePatch
+        {
+            static void Prefix()
+            {
+                Actor playerPrefab = Object.FindObjectOfType<Actor>(); //There is only one AFAICT when this is called.
+                Utils.Log("Player prefab: " + playerPrefab);
+
+                NetworkIdentity nId = playerPrefab.gameObject.AddComponent<NetworkIdentity>();
+                nId.localPlayerAuthority = true;
+                Utils.Log("Injected NetworkIdentity into player prefab");
+            
+                playerPrefab.gameObject.AddComponent<NetworkTransform>();
+                Utils.Log("Injected NetworkTransform into player prefab");
+
+                injectedNetworkStuff.ManagerNet.playerPrefab = playerPrefab.gameObject;
+            }
+        }
+
+        [HarmonyPatch(typeof(FpsActorController))]
+        [HarmonyPatch("Update")]
+        [UsedImplicitly]
+        private class PlayerUpdatePatch
+        {
+            // ReSharper disable once InconsistentNaming
+            [UsedImplicitly]
+            static bool Prefix(FpsActorController __instance)
+            {
+                return __instance.actor.gameObject.GetComponent<NetworkTransform>()
+                    .isLocalPlayer; //If not local player, do not execute Update() in FpsActorController
             }
         }
     }

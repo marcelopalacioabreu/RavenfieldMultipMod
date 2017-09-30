@@ -1,16 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using UnityEngine.Networking.Match;
 
 namespace RFMultipMod
 {
-    class NetworkScriptandHUD : MonoBehaviour
+    class NetworkScriptandHUD : NetworkBehaviour
     {
-        NetworkManagerHUD HUDManager;
-        NetworkManager ManagerNet;
+        public NetworkManagerHUD HUDManager;
+        public NetworkManager ManagerNet;
+        public NetworkIdentity MyNetworkIdentity;
 
         public void Start()
         {
