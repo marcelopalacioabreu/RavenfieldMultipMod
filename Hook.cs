@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using Harmony;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RFMultipMod
 {
@@ -52,10 +53,9 @@ namespace RFMultipMod
         {
             static void Prefix()
             {
-                Utils.Log("A game started!");
+                Utils.Log("A game started! Injecting network script and HUD...");
                 //Application.Quit();
-                //GameObject NSaHUD = new GameObject();
-                //NSaHUD.AddComponent<NetworkScriptandHUD>();
+                SceneManager.GetActiveScene().GetRootGameObjects()[0].AddComponent<NetworkScriptandHUD>();
             }
         }
     }

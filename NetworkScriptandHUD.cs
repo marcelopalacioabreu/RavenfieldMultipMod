@@ -11,10 +11,14 @@ namespace RFMultipMod
     {
         NetworkManagerHUD HUDManager;
         NetworkManager ManagerNet;
-        NetworkScriptandHUD()
+
+        public void Start()
         {
-            HUDManager = gameObject.AddComponent<NetworkManagerHUD>();
+            Utils.Log("Starting NetworkScriptAndHUD.");
             ManagerNet = gameObject.AddComponent<NetworkManager>();
+            HUDManager = gameObject.AddComponent<NetworkManagerHUD>();
+            HUDManager.manager = ManagerNet;
+            HUDManager.showGUI = true;
         }
     }
 
