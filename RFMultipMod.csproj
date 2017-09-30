@@ -39,6 +39,9 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+      <Reference Include="0Harmony, Version=1.0.9.1, Culture=neutral, PublicKeyToken=null">
+          <HintPath>DLLs\Harmony\0Harmony-Debug.dll</HintPath>
+      </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>DLLs\Beta 8.2\Assembly-CSharp.dll</HintPath>
     </Reference>
