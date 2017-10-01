@@ -10,7 +10,7 @@ namespace RFMultipMod
     public class Hook
     {
         private static HarmonyInstance _harmony;
-        static NetworkScriptandHUD injectedNetworkStuff;
+        static NetworkScriptAndHud injectedNetworkStuff;
 
         public static void StartMultiplayerMod()
         {
@@ -44,35 +44,16 @@ namespace RFMultipMod
         }
 
         [HarmonyPatch(typeof(InstantActionMaps))]
-        [HarmonyPatch("StartGame")]
+        [HarmonyPatch("Awake")]
         [UsedImplicitly]
         private class GameStartPatch
         {
             [UsedImplicitly]
-            static void Prefix()
+            static void Postfix()
             {
-                Utils.Log("A game started! Injecting network script and HUD...");
-                injectedNetworkStuff = SceneManager.GetActiveScene().GetRootGameObjects()[0].AddComponent<NetworkScriptandHUD>();
-            }
-        }
-
-        [HarmonyPatch(typeof(FpsActorController))]
-        [HarmonyPatch("Awake")]
-        private class PlayerCreatePatch
-        {
-            static void Prefix()
-            {
-                Actor playerPrefab = Object.FindObjectOfType<Actor>(); //There is only one AFAICT when this is called.
-                Utils.Log("Player prefab: " + playerPrefab);
-
-                NetworkIdentity nId = playerPrefab.gameObject.AddComponent<NetworkIdentity>();
-                nId.localPlayerAuthority = true;
-                Utils.Log("Injected NetworkIdentity into player prefab");
-            
-                playerPrefab.gameObject.AddComponent<NetworkTransform>();
-                Utils.Log("Injected NetworkTransform into player prefab");
-
-                injectedNetworkStuff.ManagerNet.playerPrefab = playerPrefab.gameObject;
+                Utils.Log("GameManager is ready. Inserting networking script...");
+                injectedNetworkStuff = SceneManager.GetActiveScene().GetRootGameObjects()[0].AddComponent<NetworkScriptAndHud>();
+                Utils.Log("Inserted networking script.");
             }
         }
 
@@ -81,12 +62,19 @@ namespace RFMultipMod
         [UsedImplicitly]
         private class PlayerUpdatePatch
         {
-            // ReSharper disable once InconsistentNaming
+            // ReSharper disable once InconsistentNaming,ArrangeTypeMemberModifiers
             [UsedImplicitly]
             static bool Prefix(FpsActorController __instance)
             {
-                return __instance.actor.gameObject.GetComponent<NetworkTransform>()
-                    .isLocalPlayer; //If not local player, do not execute Update() in FpsActorController
+                Actor actor = __instance.actor;
+                Utils.Log("Actor assigned.");
+                GameObject gameObject = actor.gameObject;
+                Utils.Log("GameObject assigned.");
+                NetworkTransform transform = gameObject.GetComponentInChildren<NetworkTransform>();
+                Utils.Log("NetworkTransform assigned");
+                var result = transform.isLocalPlayer;
+                Utils.Log("Result assigned.");
+                return result;
             }
         }
     }

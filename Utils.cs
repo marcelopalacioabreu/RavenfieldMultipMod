@@ -21,5 +21,14 @@ namespace RFMultipMod
                 Log(oneGO.name);
             }
         }
+
+        public static void LogAllChildren(GameObject gameObject)
+        {
+            Log("Logging all " + gameObject.GetComponents<GameObject>().Length + " contained objects for " + gameObject);
+            foreach (var obj in gameObject.GetComponentsInChildren<GameObject>())
+            {
+                Log("-" + obj);
+            }
+        }
     }
 }
