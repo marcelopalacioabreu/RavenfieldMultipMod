@@ -39,35 +39,47 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-      <Reference Include="0Harmony, Version=1.0.9.1, Culture=neutral, PublicKeyToken=null">
-          <HintPath>DLLs\Harmony\0Harmony-Debug.dll</HintPath>
-      </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>DLLs\Beta 8.2\Assembly-CSharp.dll</HintPath>
+    <Reference Include="0Harmony, Version=1.0.9.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>DLLs\Harmony\0Harmony-Debug.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>DLLs\Beta 8.2\Assembly-CSharp-firstpass.dll</HintPath>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>DLLs\EA Build 4\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="EasyRoads3D">
-      <HintPath>DLLs\Beta 8.2\EasyRoads3D.dll</HintPath>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>DLLs\EA Build 4\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Security">
-      <HintPath>DLLs\Beta 8.2\Mono.Security.dll</HintPath>
+    <Reference Include="EasyRoads3D, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>DLLs\EA Build 4\EasyRoads3D.dll</HintPath>
     </Reference>
-    <Reference Include="Pathfinding.ClipperLib">
-      <HintPath>DLLs\Beta 8.2\Pathfinding.ClipperLib.dll</HintPath>
+    <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <HintPath>DLLs\EA Build 4\Mono.Security.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>DLLs\Beta 8.2\UnityEngine.dll</HintPath>
+    <Reference Include="Pathfinding.ClipperLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>DLLs\EA Build 4\Pathfinding.ClipperLib.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>DLLs\Beta 8.2\UnityEngine.Networking.dll</HintPath>
+    <Reference Include="Pathfinding.Ionic.Zip.Reduced, Version=1.9.1.9000, Culture=neutral, PublicKeyToken=null">
+      <HintPath>DLLs\EA Build 4\Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>DLLs\Beta 8.2\UnityEngine.UI.dll</HintPath>
+    <Reference Include="Pathfinding.Poly2Tri, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>DLLs\EA Build 4\Pathfinding.Poly2Tri.dll</HintPath>
+    </Reference>
+    <Reference Include="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <HintPath>DLLs\EA Build 4\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <HintPath>DLLs\EA Build 4\System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <HintPath>DLLs\EA Build 4\System.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>DLLs\EA Build 4\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>DLLs\EA Build 4\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>DLLs\EA Build 4\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
