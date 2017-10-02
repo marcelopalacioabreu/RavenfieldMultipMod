@@ -10,6 +10,7 @@ namespace RFMultipMod
     public class Hook
     {
         private static HarmonyInstance _harmony;
+        private static bool _hasinsertedyet = false;
         static NetworkScriptAndHud injectedNetworkStuff;
 
         public static void StartMultiplayerMod()
@@ -51,9 +52,14 @@ namespace RFMultipMod
             [UsedImplicitly]
             static void Postfix()
             {
-                Utils.Log("GameManager is ready. Inserting networking script...");
-                injectedNetworkStuff = SceneManager.GetActiveScene().GetRootGameObjects()[0].AddComponent<NetworkScriptAndHud>();
-                Utils.Log("Inserted networking script.");
+                if (!_hasinsertedyet)
+                {
+                    Utils.Log("GameManager is ready. Inserting networking script...");
+                    injectedNetworkStuff = SceneManager.GetActiveScene().GetRootGameObjects()[0]
+                        .AddComponent<NetworkScriptAndHud>();
+                    Utils.Log("Inserted networking script.");
+                    _hasinsertedyet = true;
+                }
             }
         }
 
@@ -67,13 +73,9 @@ namespace RFMultipMod
             static bool Prefix(FpsActorController __instance)
             {
                 Actor actor = __instance.actor;
-                Utils.Log("Actor assigned.");
                 GameObject gameObject = actor.gameObject;
-                Utils.Log("GameObject assigned.");
-                NetworkTransform transform = gameObject.GetComponentInChildren<NetworkTransform>();
-                Utils.Log("NetworkTransform assigned");
-                var result = transform.isLocalPlayer;
-                Utils.Log("Result assigned.");
+                NetworkTransform transform = gameObject.transform.parent.GetComponentInChildren<NetworkTransform>();
+                var result = transform.isLocalPlayer; //Doing it the long way to hopefully be able to catch errors easier. DO NOT SIMPLIFY.
                 return result;
             }
         }

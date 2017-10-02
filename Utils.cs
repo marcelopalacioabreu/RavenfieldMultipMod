@@ -24,10 +24,10 @@ namespace RFMultipMod
 
         public static void LogAllChildren(GameObject gameObject)
         {
-            Log("Logging all " + gameObject.GetComponents<GameObject>().Length + " contained objects for " + gameObject);
-            foreach (var obj in gameObject.GetComponentsInChildren<GameObject>())
+            Log("Logging all " + gameObject.transform.childCount + " contained objects for " + gameObject);
+            foreach (Transform child in gameObject.transform)
             {
-                Log("-" + obj);
+                Log("-" + child.gameObject);
             }
         }
     }

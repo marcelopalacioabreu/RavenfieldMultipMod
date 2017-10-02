@@ -20,7 +20,6 @@ namespace RFMultipMod
             
             Utils.Log("Beginning injection into player prefab...");
             GameObject playerPrefab = GameManager.instance.playerPrefab;
-            Utils.LogAllChildren(playerPrefab);
 
             NetworkIdentity nId = playerPrefab.gameObject.AddComponent<NetworkIdentity>();
             nId.localPlayerAuthority = true;
@@ -35,8 +34,8 @@ namespace RFMultipMod
 
         public void Update()
         {
-            GameObject playerPrefab = GameManager.instance.playerPrefab;
-            Utils.LogAllChildren(playerPrefab);
+            //GameObject playerPrefab = GameManager.instance.playerPrefab;
+            //Utils.LogAllChildren(playerPrefab);
             if (Input.GetKeyDown(KeyCode.F1))
             {
                 HudManager.showGUI = !HudManager.showGUI;
