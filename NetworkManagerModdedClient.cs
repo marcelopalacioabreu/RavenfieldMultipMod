@@ -52,17 +52,19 @@ namespace RFMultipMod
             base.OnStartServer();
             Log("[Server] Starting!");
             NetworkConnectionActive = true;
+            FpsActorController player = FindObjectsOfType<FpsActorController>().FirstOrDefault(p =>
+                p.gameObject.GetComponentInChildren<NetworkTransform>().netId.Value == 0);
+            if (player != null)
+            {
+                Destroy(player.gameObject);
+                ActorManager.instance.actors.Remove(player.actor);
+            }
         }
 
         public override void OnServerReady(NetworkConnection conn)
         {
             base.OnServerReady(conn);
             Log("[Server] Ready!");
-            FpsActorController player = FindObjectsOfType<FpsActorController>().First(p =>
-                p.gameObject.GetComponentInChildren<NetworkTransform>().netId.Value == 0);
-            Destroy(player.gameObject);
-            
-            ActorManager.instance.actors.Remove(player.actor);
         }
 
         public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
