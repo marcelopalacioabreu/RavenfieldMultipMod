@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
+using UnityStandardAssets.Characters.FirstPerson;
 
 namespace RFMultipMod
 {
@@ -25,6 +27,8 @@ namespace RFMultipMod
         {
             base.OnClientDisconnect(conn);
             Log("[Client] Disconnected from " + conn.address);
+            SceneManager.LoadScene(1); //Go back to main menu.
+            MouseLook.paused = false;
         }
 
         //Called when the client starts
@@ -110,6 +114,8 @@ namespace RFMultipMod
             base.OnStopClient();
             Log("[Client] Stopping!");
             NetworkConnectionActive = false;
+            SceneManager.LoadScene(1); //Go back to main menu.
+            MouseLook.paused = false;
         }
 
         public override void OnStopHost()
