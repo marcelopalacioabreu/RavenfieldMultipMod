@@ -1,9 +1,13 @@
-﻿using UnityEngine.Networking;
+﻿using System;
+using System.Linq;
+using UnityEngine.Networking;
 
 namespace RFMultipMod
 {
     class NetworkManagerModdedClient : NetworkManager
     {
+        public bool NetworkConnectionActive;
+        
         public NetworkManagerModdedClient()
         {
             dontDestroyOnLoad = true;
@@ -28,6 +32,7 @@ namespace RFMultipMod
         {
             base.OnStartClient(networkClient);
             Log("[Client] Starting!");
+            NetworkConnectionActive = true;
         }
 
         public override void OnStartHost()
@@ -46,18 +51,31 @@ namespace RFMultipMod
         {
             base.OnStartServer();
             Log("[Server] Starting!");
+            NetworkConnectionActive = true;
         }
 
         public override void OnServerReady(NetworkConnection conn)
         {
             base.OnServerReady(conn);
             Log("[Server] Ready!");
+            FpsActorController player = FindObjectsOfType<FpsActorController>().First(p =>
+                p.gameObject.GetComponentInChildren<NetworkTransform>().netId.Value == 0);
+            Destroy(player.gameObject);
+            
+            ActorManager.instance.actors.Remove(player.actor);
         }
 
         public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
         {
             base.OnServerAddPlayer(conn, playerControllerId);
             Log("[Server] Adding player from " + conn.address + " with ID " + playerControllerId);
+
+            FpsActorController justAdded = FindObjectsOfType<FpsActorController>().First(ctrl =>
+                ctrl.gameObject.GetComponentInChildren<NetworkTransform>().playerControllerId == playerControllerId);
+            
+            Log("[Server] Player known to actormanager? " + ActorManager.instance.actors.Contains(justAdded.actor));
+            ActorManager.instance.actors.Add(justAdded.actor);
+            ActorManager.instance.player = justAdded.actor;
         }
 
         public override void OnServerSceneChanged(string sceneName)
@@ -82,12 +100,14 @@ namespace RFMultipMod
         {
             base.OnStopServer();
             Log("[Server] Stopping!");
+            NetworkConnectionActive = false;
         }
 
         public override void OnStopClient()
         {
             base.OnStopClient();
             Log("[Client] Stopping!");
+            NetworkConnectionActive = false;
         }
 
         public override void OnStopHost()

@@ -72,10 +72,13 @@ namespace RFMultipMod
             [UsedImplicitly]
             static bool Prefix(FpsActorController __instance)
             {
+                if (!injectedNetworkStuff.NetworkManager.NetworkConnectionActive) return true;
+                
                 Actor actor = __instance.actor;
                 GameObject gameObject = actor.gameObject;
                 NetworkTransform transform = gameObject.transform.parent.GetComponentInChildren<NetworkTransform>();
                 var result = transform.isLocalPlayer; //Doing it the long way to hopefully be able to catch errors easier. DO NOT SIMPLIFY.
+                Utils.Log("[Debug] " + (result ? "" : "Not ") + " Allowing player to tick. (" + (transform.isClient ? "isClient " : "") + (transform.isServer ? "isServer ": "") + (transform.isLocalPlayer ? "isLocalPlayer" : "") + ") ID: " + transform.netId);
                 return result;
             }
         }
