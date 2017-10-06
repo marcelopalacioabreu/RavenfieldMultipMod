@@ -91,9 +91,9 @@ namespace RFMultipMod
             Log("[Server] Player known to actormanager? " + ActorManager.instance.actors.Contains(justAdded.actor));
             //ActorManager.instance.actors.Add(justAdded.actor);
             ActorManager.instance.player = justAdded.actor;
-            
-            ConnectedPlayers.Add(conn, justAdded);
-            NetworkServer.Spawn(justAdded.gameObject);
+
+            ConnectedPlayers[conn] = justAdded;
+            NetworkServer.AddPlayerForConnection(conn, justAdded.gameObject, playerControllerId);
         }
 
         public override void OnServerSceneChanged(string sceneName)

@@ -92,8 +92,9 @@ namespace RFMultipMod
             static bool Prefix(FirstPersonController __instance)
             {
                 if (!injectedNetworkStuff.NetworkManager.NetworkConnectionActive) return true;
+
+                NetworkTransform transform = __instance.GetComponent<NetworkTransform>();
                 
-                NetworkTransform transform = __instance.transform.parent.gameObject.GetComponent<NetworkTransform>();
                 var result = transform.isLocalPlayer;
                 Utils.Log("[Debug] " + (result ? "" : "Not ") + " Allowing firstpersoncontroller to tick. (" + (transform.isClient ? "isClient " : "") + (transform.isServer ? "isServer ": "") + (transform.isLocalPlayer ? "isLocalPlayer" : "") + ") ID: " + transform.netId);
                 return result;
