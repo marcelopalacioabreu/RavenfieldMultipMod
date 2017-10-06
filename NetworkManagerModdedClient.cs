@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.Characters.FirstPerson;
 
 namespace RFMultipMod
 {
-    class NetworkManagerModdedClient : NetworkManager
+    internal class NetworkManagerModdedClient : NetworkManager
     {
         public bool NetworkConnectionActive;
 

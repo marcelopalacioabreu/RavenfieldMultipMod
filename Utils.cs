@@ -7,27 +7,25 @@ namespace RFMultipMod
     public class Utils : MonoBehaviour
     {
         private static bool _hasLoggedThisSession;
-        private static readonly string _logFilePath = Application.dataPath + "\\mpmod.log";
-        private static object[] _lockObj = { };
+        private static readonly string LogFilePath = Application.dataPath + "\\mpmod.log";
+        private static readonly object[] LockObj = { };
 
         private static StreamWriter _logWriter;
 
-        public static void Log(String message)
+        public static void Log(string message)
         {
             Console.WriteLine("[INFO] [RFMpMod] " + message);
-            if (!_hasLoggedThisSession && File.Exists(_logFilePath))
+            if (!_hasLoggedThisSession && File.Exists(LogFilePath))
             {
-                File.Delete(_logFilePath);
+                File.Delete(LogFilePath);
             }
 
-            lock (_lockObj)
+            lock (LockObj)
             {
                 if (_logWriter == null)
                 {
-                    Console.WriteLine("Creating log writer.");
                     _logWriter =
-                        new StreamWriter(File.Open(_logFilePath, FileMode.Append, FileAccess.Write, FileShare.Read)) {AutoFlush = true};
-                    Console.WriteLine("Created: " + _logWriter);
+                        new StreamWriter(File.Open(LogFilePath, FileMode.Append, FileAccess.Write, FileShare.Read)) {AutoFlush = true};
                 }   
             }
             
@@ -43,10 +41,16 @@ namespace RFMultipMod
         public static void LogAllGameObjects()
         {
             Log("All GameObjects in Scene: ");
-            GameObject[] allGO = FindObjectsOfType(typeof(GameObject)) as GameObject[];
-            foreach (var oneGO in allGO)
+            GameObject[] allGo = FindObjectsOfType(typeof(GameObject)) as GameObject[];
+            if (allGo == null)
             {
-                Log(oneGO.name);
+                Log("<Error retrieving game objects>");
+                return;
+            }
+            
+            foreach (var oneGo in allGo)
+            {
+                Log(oneGo.name);
             }
         }
 

@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Harmony;
 using JetBrains.Annotations;
-using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.Characters.FirstPerson;
@@ -11,8 +10,8 @@ namespace RFMultipMod
     public class Hook
     {
         private static HarmonyInstance _harmony;
-        private static bool _hasinsertedyet = false;
-        static NetworkScriptAndHud injectedNetworkStuff;
+        private static bool _hasinsertedyet;
+        private static NetworkScriptAndHud _injectedNetworkStuff;
 
         public static void StartMultiplayerMod()
         {
@@ -53,14 +52,13 @@ namespace RFMultipMod
             [UsedImplicitly]
             static void Postfix()
             {
-                if (!_hasinsertedyet)
-                {
-                    Utils.Log("GameManager is ready. Inserting networking script...");
-                    injectedNetworkStuff = SceneManager.GetActiveScene().GetRootGameObjects()[0]
-                        .AddComponent<NetworkScriptAndHud>();
-                    Utils.Log("Inserted networking script.");
-                    _hasinsertedyet = true;
-                }
+                if (_hasinsertedyet) return;
+                
+                Utils.Log("GameManager is ready. Inserting networking script...");
+                _injectedNetworkStuff = SceneManager.GetActiveScene().GetRootGameObjects()[0]
+                    .AddComponent<NetworkScriptAndHud>();
+                Utils.Log("Inserted networking script.");
+                _hasinsertedyet = true;
             }
         }
 
@@ -73,7 +71,7 @@ namespace RFMultipMod
             [UsedImplicitly]
             static bool Prefix(FpsActorController __instance)
             {
-                if (!injectedNetworkStuff.NetworkManager.NetworkConnectionActive) return true;
+                if (!_injectedNetworkStuff.NetworkManager.NetworkConnectionActive) return true;
                 
                 NetworkTransform transform = __instance.gameObject.GetComponentInChildren<NetworkTransform>();
                 var result = transform.isLocalPlayer;
@@ -91,7 +89,7 @@ namespace RFMultipMod
             [UsedImplicitly]
             static bool Prefix(FirstPersonController __instance)
             {
-                if (!injectedNetworkStuff.NetworkManager.NetworkConnectionActive) return true;
+                if (!_injectedNetworkStuff.NetworkManager.NetworkConnectionActive) return true;
 
                 NetworkTransform transform = __instance.GetComponent<NetworkTransform>();
                 

@@ -30,6 +30,8 @@ namespace RFMultipMod
             Utils.Log("Injected NetworkTransform into player prefab");
 
             NetworkManager.playerPrefab = playerPrefab;
+            
+            NetworkManager.spawnPrefabs.Add(playerPrefab);
             DontDestroyOnLoad(this);
         }
 
