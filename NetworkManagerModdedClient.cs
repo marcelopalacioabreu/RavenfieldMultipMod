@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -10,25 +11,31 @@ namespace RFMultipMod
     class NetworkManagerModdedClient : NetworkManager
     {
         public bool NetworkConnectionActive;
+
+        public Dictionary<NetworkConnection, FpsActorController> ConnectedPlayers = new Dictionary<NetworkConnection, FpsActorController>();
+        
+        public NetworkConnection ClientConnection;
+        public string RemoteServerIp;
         
         public NetworkManagerModdedClient()
         {
             dontDestroyOnLoad = true;
-            
         }
 
         //Called from client when connected to a server
         public override void OnClientConnect(NetworkConnection conn)
         {
             base.OnClientConnect(conn);
-            Log("[Client] Connected to " + conn.address);
+            RemoteServerIp = conn.address;
+            Log("[Client] Connected to " + RemoteServerIp);
+            ClientConnection = conn;
         }
 
         //Called from client when disconnected.
         public override void OnClientDisconnect(NetworkConnection conn)
         {
             base.OnClientDisconnect(conn);
-            Log("[Client] Disconnected from " + conn.address);
+            Log("[Client] Disconnected from " + RemoteServerIp);
             SceneManager.LoadScene(1); //Go back to main menu.
             MouseLook.paused = false;
         }
@@ -51,6 +58,7 @@ namespace RFMultipMod
         {
             base.OnServerConnect(conn);
             Log("[Server] Incoming connection from " + conn.address);
+            ConnectedPlayers.Add(conn, null);
         }
 
         public override void OnStartServer()
@@ -60,11 +68,10 @@ namespace RFMultipMod
             NetworkConnectionActive = true;
             FpsActorController player = FindObjectsOfType<FpsActorController>().FirstOrDefault(p =>
                 p.gameObject.GetComponentInChildren<NetworkTransform>().netId.Value == 0);
-            if (player != null)
-            {
-                Destroy(player.gameObject);
-                ActorManager.instance.actors.Remove(player.actor);
-            }
+            if (player == null) return;
+            
+            Destroy(player.gameObject);
+            ActorManager.instance.actors.Remove(player.actor);
         }
 
         public override void OnServerReady(NetworkConnection conn)
@@ -82,8 +89,11 @@ namespace RFMultipMod
                 ctrl.gameObject.GetComponentInChildren<NetworkTransform>().playerControllerId == playerControllerId);
             
             Log("[Server] Player known to actormanager? " + ActorManager.instance.actors.Contains(justAdded.actor));
-            ActorManager.instance.actors.Add(justAdded.actor);
+            //ActorManager.instance.actors.Add(justAdded.actor);
             ActorManager.instance.player = justAdded.actor;
+            
+            ConnectedPlayers.Add(conn, justAdded);
+            NetworkServer.Spawn(justAdded.gameObject);
         }
 
         public override void OnServerSceneChanged(string sceneName)
@@ -102,6 +112,14 @@ namespace RFMultipMod
         {
             base.OnServerDisconnect(conn);
             Log("[Server] " + conn.address + " lost connection.");
+            FpsActorController justLeft;
+            ConnectedPlayers.TryGetValue(conn, out justLeft);
+            if (justLeft == null)
+            {
+                Log("[Server] Unable to drop actor - not in dictionary.");
+                return;
+            }
+            ActorManager.Drop(justLeft.actor);
         }
 
         public override void OnStopServer()
@@ -126,7 +144,7 @@ namespace RFMultipMod
             Log("[Host] Stopping!");
         }
 
-        private void Log(string msg)
+        private static void Log(string msg)
         {
             Utils.Log("[Network Manager] " + msg);
         }

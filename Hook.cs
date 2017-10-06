@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityStandardAssets.Characters.FirstPerson;
 
 namespace RFMultipMod
 {
@@ -66,7 +67,7 @@ namespace RFMultipMod
         [HarmonyPatch(typeof(FpsActorController))]
         [HarmonyPatch("Update")]
         [UsedImplicitly]
-        private class PlayerUpdatePatch
+        private class FpsActorControllerPatch
         {
             // ReSharper disable once InconsistentNaming,ArrangeTypeMemberModifiers
             [UsedImplicitly]
@@ -74,11 +75,27 @@ namespace RFMultipMod
             {
                 if (!injectedNetworkStuff.NetworkManager.NetworkConnectionActive) return true;
                 
-                Actor actor = __instance.actor;
-                GameObject gameObject = actor.gameObject;
-                NetworkTransform transform = gameObject.transform.parent.GetComponentInChildren<NetworkTransform>();
-                var result = transform.isLocalPlayer; //Doing it the long way to hopefully be able to catch errors easier. DO NOT SIMPLIFY.
-                Utils.Log("[Debug] " + (result ? "" : "Not ") + " Allowing player to tick. (" + (transform.isClient ? "isClient " : "") + (transform.isServer ? "isServer ": "") + (transform.isLocalPlayer ? "isLocalPlayer" : "") + ") ID: " + transform.netId);
+                NetworkTransform transform = __instance.gameObject.GetComponentInChildren<NetworkTransform>();
+                var result = transform.isLocalPlayer;
+                Utils.Log("[Debug] " + (result ? "" : "Not ") + " Allowing fpsactorcontroller to tick. (" + (transform.isClient ? "isClient " : "") + (transform.isServer ? "isServer ": "") + (transform.isLocalPlayer ? "isLocalPlayer" : "") + ") ID: " + transform.netId);
+                return result;
+            }
+        }
+
+        [HarmonyPatch(typeof(FirstPersonController))]
+        [HarmonyPatch("Update")]
+        [UsedImplicitly]
+        private class FirstPersonControllerPatch
+        {
+            // ReSharper disable once InconsistentNaming,ArrangeTypeMemberModifiers
+            [UsedImplicitly]
+            static bool Prefix(FirstPersonController __instance)
+            {
+                if (!injectedNetworkStuff.NetworkManager.NetworkConnectionActive) return true;
+                
+                NetworkTransform transform = __instance.transform.parent.gameObject.GetComponent<NetworkTransform>();
+                var result = transform.isLocalPlayer;
+                Utils.Log("[Debug] " + (result ? "" : "Not ") + " Allowing firstpersoncontroller to tick. (" + (transform.isClient ? "isClient " : "") + (transform.isServer ? "isServer ": "") + (transform.isLocalPlayer ? "isLocalPlayer" : "") + ") ID: " + transform.netId);
                 return result;
             }
         }
