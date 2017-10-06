@@ -14,6 +14,7 @@ namespace RFMultipMod
             Utils.Log("Starting NetworkScriptAndHUD.");
             Utils.Log("Adding client and hud...");
             NetworkManager = gameObject.AddComponent<NetworkManagerModdedClient>();
+            NetworkManager.networkAddress = "0.0.0.0";
             HudManager = gameObject.AddComponent<NetworkManagerHUD>();
             HudManager.manager = NetworkManager;
             HudManager.showGUI = true;

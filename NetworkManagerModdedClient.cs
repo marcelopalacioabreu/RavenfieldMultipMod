@@ -14,6 +14,7 @@ namespace RFMultipMod
         public NetworkManagerModdedClient()
         {
             dontDestroyOnLoad = true;
+            
         }
 
         //Called from client when connected to a server
